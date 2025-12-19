@@ -1,0 +1,56 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: marquez
+      POSTGRES_PASSWORD: marquez
+      POSTGRES_DB: marquez
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - marquez-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U marquez"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  marquez:
+    image: marquezproject/marquez:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - MARQUEZ_CONFIG=/usr/src/app/marquez.yml
+      - MARQUEZ_PORT=9000
+      - MARQUEZ_ADMIN_PORT=8081
+    volumes:
+      - ./marquez.yml:/usr/src/app/marquez.yml
+    ports:
+      - "9000:9000"
+      - "8081:8081"
+    networks:
+      - marquez-network
+
+  marquez-web:
+    image: marquezproject/marquez-web:latest
+    depends_on:
+      - marquez
+    environment:
+      - MARQUEZ_HOST=marquez
+      - MARQUEZ_PORT=9000
+      - WEB_PORT=3000
+    ports:
+      - "3000:3000"
+    networks:
+      - marquez-network
+
+volumes:
+  postgres_data:
+
+networks:
+  marquez-network:
+    driver: bridge

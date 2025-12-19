@@ -1,0 +1,25 @@
+[{
+  "eventType": "COMPLETE",
+  "eventTime": "2024-01-15T10:15:00Z",
+  "run": {
+    "runId": "sas-run-2024-01-15-101500"
+  },
+  "job": {
+    "namespace": "sas_analytics",
+    "name": "customer_segmentation"
+  },
+  "inputs": [
+    {
+      "namespace": "sas_lib",
+      "name": "work.raw_customers"
+    }
+  ],
+  "outputs": [
+    {
+      "namespace": "sas_lib",
+      "name": "work.customer_segments"
+    }
+  ],
+  "producer": "sas_client",
+  "schemaURL": "https://openlineage.io/spec/1-0-5/OpenLineage.json"
+}]
